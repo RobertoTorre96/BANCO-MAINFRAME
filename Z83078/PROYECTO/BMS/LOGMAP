@@ -1,0 +1,49 @@
+LOGSET   DFHMSD TYPE=&SYSPARM,                                         X
+               LANG=COBOL,                                             X
+               MODE=INOUT,                                             X
+               TERM=3270-2,                                            X
+               CTRL=(FREEKB,FRSET),                                    X
+               STORAGE=AUTO,                                           X
+               TIOAPFX=YES
+*
+LOGMAP   DFHMDI SIZE=(24,80),                                          X
+               LINE=1,                                                 X
+               COLUMN=1
+*
+         DFHMDF POS=(1,30),                                            X
+               LENGTH=20,                                              X
+               ATTRB=(PROT,BRT),                                       X
+               INITIAL='MINI BANCO - LOGIN'
+*
+         DFHMDF POS=(4,10),                                            X
+               LENGTH=6,                                               X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='EMAIL:'
+EMAIL    DFHMDF POS=(4,20),                                            X
+               LENGTH=40,                                              X
+               ATTRB=(UNPROT,IC,NORM),                                 X
+               PICIN='X(40)',                                          X
+               PICOUT='X(40)'
+*
+         DFHMDF POS=(6,10),                                            X
+               LENGTH=10,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='PASSWORD:'
+PASSWORD DFHMDF POS=(6,20),                                            X
+               LENGTH=20,                                              X
+               ATTRB=(UNPROT,DRK),                                     X
+               PICIN='X(20)',                                          X
+               PICOUT='X(20)'
+*
+MENSAJE  DFHMDF POS=(10,10),                                           X
+               LENGTH=60,                                              X
+               ATTRB=(PROT,NORM,FSET),                                 X
+               INITIAL=' '
+*
+         DFHMDF POS=(24,1),                                            X
+               LENGTH=40,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='ENTER=Validar  PF3=Salir'
+*
+         DFHMSD TYPE=FINAL
+         END

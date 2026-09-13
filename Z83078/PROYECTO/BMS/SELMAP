@@ -1,0 +1,77 @@
+SELSET   DFHMSD TYPE=&SYSPARM,                                         X
+               LANG=COBOL,                                             X
+               MODE=INOUT,                                             X
+               TERM=3270-2,                                            X
+               CTRL=(FREEKB,FRSET),                                    X
+               STORAGE=AUTO,                                           X
+               TIOAPFX=YES
+*
+SELMAP   DFHMDI SIZE=(24,80),                                          X
+               LINE=1,                                                 X
+               COLUMN=1
+*
+         DFHMDF POS=(1,27),                                            X
+               LENGTH=26,                                              X
+               ATTRB=(PROT,BRT),                                       X
+               INITIAL='SELECCION DE CUENTA'
+*
+         DFHMDF POS=(4,5),                                             X
+               LENGTH=12,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='1 - CUENTA:'
+CUENTA1  DFHMDF POS=(4,20),                                            X
+               LENGTH=10,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               PICIN='X(10)',                                          X
+               PICOUT='X(10)'
+*
+         DFHMDF POS=(5,5),                                             X
+               LENGTH=12,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='2 - CUENTA:'
+CUENTA2  DFHMDF POS=(5,20),                                            X
+               LENGTH=10,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               PICIN='X(10)',                                          X
+               PICOUT='X(10)'
+*
+         DFHMDF POS=(6,5),                                             X
+               LENGTH=12,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='3 - CUENTA:'
+CUENTA3  DFHMDF POS=(6,20),                                            X
+               LENGTH=10,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               PICIN='X(10)',                                          X
+               PICOUT='X(10)'
+*
+         DFHMDF POS=(7,5),                                             X
+               LENGTH=12,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='4 - CUENTA:'
+CUENTA4  DFHMDF POS=(7,20),                                            X
+               LENGTH=10,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               PICIN='X(10)',                                          X
+               PICOUT='X(10)'
+*
+OPCION   DFHMDF POS=(10,15),                                           X
+               LENGTH=1,                                               X
+               ATTRB=(UNPROT,NUM,IC)
+         DFHMDF POS=(10,5),                                            X
+               LENGTH=9,                                               X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='Opcion:'
+*
+MENSAJE  DFHMDF POS=(14,5),                                            X
+               LENGTH=60,                                              X
+               ATTRB=(PROT,NORM,FSET),                                 X
+               INITIAL=' '
+*
+         DFHMDF POS=(24,1),                                            X
+               LENGTH=45,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='ENTER=Seleccionar  PF3=Volver'
+*
+         DFHMSD TYPE=FINAL
+         END

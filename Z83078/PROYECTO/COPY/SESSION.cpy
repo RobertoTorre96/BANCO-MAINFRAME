@@ -1,0 +1,5 @@
+          05 SESSION-STATE    PIC X     VALUE 'A'.
+          05 SESSION-TITULAR  PIC S9(9) COMP.
+          05 SESSION-EMAIL    PIC X(40).
+          05 SESSION-OPER     PIC X     VALUE SPACE.
+          05 SESSION-CUENTA   PIC X(10) VALUE SPACES.

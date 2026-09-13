@@ -1,0 +1,44 @@
+           EXEC SQL
+                DECLARE C-CUENTAS CURSOR FOR
+                SELECT NRO_CUENTA
+                  FROM Z83078.CUENTAS
+                 WHERE NRO_TITULAR = :SESSION-TITULAR
+                 ORDER BY NRO_CUENTA
+           END-EXEC.
+
+           EXEC SQL
+                OPEN C-CUENTAS
+           END-EXEC.
+           IF SQLCODE = 0
+              EXEC SQL
+                   FETCH C-CUENTAS INTO :WS-CUENTA-1
+              END-EXEC
+              IF SQLCODE = 0
+                 MOVE WS-CUENTA-1 TO WS-CUENTA-1-EDIT
+                 MOVE WS-CUENTA-1-EDIT TO CUENTA1O
+              END-IF
+              EXEC SQL
+                   FETCH C-CUENTAS INTO :WS-CUENTA-2
+              END-EXEC
+              IF SQLCODE = 0
+                 MOVE WS-CUENTA-2 TO WS-CUENTA-2-EDIT
+                 MOVE WS-CUENTA-2-EDIT TO CUENTA2O
+              END-IF
+              EXEC SQL
+                   FETCH C-CUENTAS INTO :WS-CUENTA-3
+              END-EXEC
+              IF SQLCODE = 0
+                 MOVE WS-CUENTA-3 TO WS-CUENTA-3-EDIT
+                 MOVE WS-CUENTA-3-EDIT TO CUENTA3O
+              END-IF
+              EXEC SQL
+                   FETCH C-CUENTAS INTO :WS-CUENTA-4
+              END-EXEC
+              IF SQLCODE = 0
+                 MOVE WS-CUENTA-4 TO WS-CUENTA-4-EDIT
+                 MOVE WS-CUENTA-4-EDIT TO CUENTA4O
+              END-IF
+              EXEC SQL
+                   CLOSE C-CUENTAS
+              END-EXEC
+           END-IF.

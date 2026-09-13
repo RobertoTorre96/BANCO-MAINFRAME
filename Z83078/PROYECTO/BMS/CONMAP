@@ -1,0 +1,66 @@
+CONSET   DFHMSD TYPE=&SYSPARM,                                         X
+               LANG=COBOL,                                             X
+               MODE=INOUT,                                             X
+               TERM=3270-2,                                            X
+               CTRL=(FREEKB,FRSET),                                    X
+               STORAGE=AUTO,                                           X
+               TIOAPFX=YES
+*
+CONMAP   DFHMDI SIZE=(24,80),                                          X
+               LINE=1,                                                 X
+               COLUMN=1
+*
+         DFHMDF POS=(1,28),                                            X
+               LENGTH=24,                                              X
+               ATTRB=(PROT,BRT),                                       X
+               INITIAL='CONSULTA DE CUENTA'
+*
+         DFHMDF POS=(4,5),                                             X
+               LENGTH=18,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='NRO. CUENTA:'
+NROCUENTA DFHMDF POS=(4,25),                                           X
+               LENGTH=10,                                              X
+               ATTRB=(UNPROT,NUM,IC),                                  X
+               PICIN='X(10)',                                          X
+               PICOUT='X(10)'
+*
+         DFHMDF POS=(7,5),                                             X
+               LENGTH=10,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='NOMBRE:'
+NOMBRE   DFHMDF POS=(7,25),                                            X
+               LENGTH=30,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               PICOUT='X(30)'
+*
+         DFHMDF POS=(8,5),                                             X
+               LENGTH=10,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='APELLIDO:'
+APELLIDO DFHMDF POS=(8,25),                                            X
+               LENGTH=30,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               PICOUT='X(30)'
+*
+         DFHMDF POS=(10,5),                                            X
+               LENGTH=10,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='SALDO:'
+SALDO    DFHMDF POS=(10,25),                                           X
+               LENGTH=15,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               PICOUT='X(15)'
+*
+MENSAJE  DFHMDF POS=(14,5),                                           X
+               LENGTH=60,                                              X
+               ATTRB=(PROT,NORM,FSET),                                 X
+               INITIAL=' '
+*
+         DFHMDF POS=(24,1),                                            X
+               LENGTH=45,                                              X
+               ATTRB=(PROT,NORM),                                      X
+               INITIAL='ENTER=Consultar  PF3=Salir'
+*
+         DFHMSD TYPE=FINAL
+         END

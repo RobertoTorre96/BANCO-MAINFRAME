@@ -1,0 +1,54 @@
+MENUSET  DFHMSD TYPE=&SYSPARM,                                         X
+               LANG=COBOL,                                             X
+               MODE=INOUT,                                             X
+               TERM=3270-2,                                            X
+               CTRL=(FREEKB,FRSET),                                    X
+               STORAGE=AUTO,                                           X
+               TIOAPFX=YES
+*
+MENUMAP  DFHMDI SIZE=(24,80),                                          X
+               LINE=1,                                                 X
+               COLUMN=1
+*
+         DFHMDF POS=(1,30),                                            X
+               LENGTH=20,                                              X
+               ATTRB=(ASKIP,BRT),                                      X
+               INITIAL='MENU PRINCIPAL BANCO'
+*
+         DFHMDF POS=(3,5),                                             X
+               LENGTH=25,                                              X
+               ATTRB=ASKIP,                                            X
+               INITIAL='1. Consultar cuenta'
+*
+         DFHMDF POS=(4,5),                                             X
+               LENGTH=25,                                              X
+               ATTRB=ASKIP,                                            X
+               INITIAL='2. Depositar'
+*
+         DFHMDF POS=(5,5),                                             X
+               LENGTH=25,                                              X
+               ATTRB=ASKIP,                                            X
+               INITIAL='3. Retirar'
+*
+         DFHMDF POS=(6,5),                                             X
+               LENGTH=25,                                              X
+               ATTRB=ASKIP,                                            X
+               INITIAL='4. Consultar movimientos'
+*
+         DFHMDF POS=(8,5),                                             X
+               LENGTH=10,                                              X
+               ATTRB=ASKIP,                                            X
+               INITIAL='Opcion:'
+*
+OPCION   DFHMDF POS=(8,15),                                            X
+               LENGTH=1,                                               X
+               ATTRB=(UNPROT,NUM,IC),                                  X
+               FSET=YES
+*
+         DFHMDF POS=(20,5),                                            X
+               LENGTH=50,                                              X
+               ATTRB=(ASKIP,BRT),                                     X
+               INITIAL='Ingrese opcion y presione Enter. PF3=Salir'
+*
+         DFHMSD TYPE=FINAL
+         END

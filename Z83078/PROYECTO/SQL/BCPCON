@@ -1,0 +1,13 @@
+           EXEC SQL
+                SELECT T.NOMBRE,
+                       T.APELLIDO,
+                       C.SALDO
+                  INTO :WS-NOMBRE,
+                       :WS-APELLIDO,
+                       :WS-SALDO
+                  FROM Z83078.CUENTAS C
+                  INNER JOIN Z83078.TITULARES T
+                    ON C.NRO_TITULAR = T.NRO_TITULAR
+                 WHERE C.NRO_CUENTA = :WS-NRO-CUENTA
+                   AND C.NRO_TITULAR = :SESSION-TITULAR
+           END-EXEC.
