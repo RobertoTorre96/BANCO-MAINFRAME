@@ -32,14 +32,39 @@
                    END-EXEC
            ELSE
               IF EIBCALEN = 0 OR SESSION-STATE = 'C'
-                 MOVE LOW-VALUES TO CONMAPO
-                 MOVE 'Ingrese el numero de cuenta' TO MENSAJEO
-                 MOVE 'M' TO SESSION-STATE
-                 EXEC CICS SEND MAP('CONMAP')
-                      MAPSET('CONSET')
-                      ERASE
-                      RESP(WS-RESP)
-                      END-EXEC
+                 IF SESSION-CUENTA NOT = SPACES
+                    MOVE SESSION-CUENTA TO NROCUENTAO
+                    COMPUTE WS-NRO-CUENTA = FUNCTION NUMVAL
+                       (SESSION-CUENTA)
+                    PERFORM 100-CONSULTAR-DB2
+                    EVALUATE SQLCODE
+                    WHEN 0
+                         MOVE WS-NOMBRE TO NOMBREO
+                         MOVE WS-APELLIDO TO APELLIDOO
+                         MOVE WS-SALDO TO WS-SALDO-EDIT
+                         MOVE WS-SALDO-EDIT TO SALDOO
+                         MOVE 'Cuenta encontrada' TO MENSAJEO
+                    WHEN 100
+                         MOVE 'Cuenta no encontrada' TO MENSAJEO
+                    WHEN OTHER
+                         MOVE 'Error al consultar cuenta' TO MENSAJEO
+                    END-EVALUATE
+                    MOVE 'M' TO SESSION-STATE
+                    EXEC CICS SEND MAP('CONMAP')
+                         MAPSET('CONSET')
+                         ERASE
+                         RESP(WS-RESP)
+                         END-EXEC
+                 ELSE
+                    MOVE LOW-VALUES TO CONMAPO
+                    MOVE 'Ingrese el numero de cuenta' TO MENSAJEO
+                    MOVE 'M' TO SESSION-STATE
+                    EXEC CICS SEND MAP('CONMAP')
+                         MAPSET('CONSET')
+                         ERASE
+                         RESP(WS-RESP)
+                         END-EXEC
+                 END-IF
               ELSE
                  EXEC CICS RECEIVE MAP('CONMAP')
                       MAPSET('CONSET')

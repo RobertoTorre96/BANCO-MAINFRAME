@@ -55,21 +55,29 @@
                  ELSE
                     PERFORM 200-SELECCIONAR-CUENTA
                     IF SQLCODE = 0
-                       IF SESSION-OPER = 'D'
-                          MOVE 'D' TO SESSION-STATE
+                       IF SESSION-OPER = 'C'
+                          MOVE 'C' TO SESSION-STATE
                           EXEC CICS RETURN
-                               TRANSID('BDEP')
+                               TRANSID('BCON')
                                COMMAREA(DFHCOMMAREA)
                                LENGTH(56)
                                END-EXEC
                        ELSE
-                          MOVE 'R' TO SESSION-STATE
-                          EXEC CICS RETURN
-                               TRANSID('BRET')
-                               COMMAREA(DFHCOMMAREA)
-                               LENGTH(56)
-                               END-EXEC
-                       END-IF
+                          IF SESSION-OPER = 'D'
+                             MOVE 'D' TO SESSION-STATE
+                             EXEC CICS RETURN
+                                  TRANSID('BDEP')
+                                  COMMAREA(DFHCOMMAREA)
+                                  LENGTH(56)
+                                  END-EXEC
+                          ELSE
+                             MOVE 'R' TO SESSION-STATE
+                             EXEC CICS RETURN
+                                  TRANSID('BRET')
+                                  COMMAREA(DFHCOMMAREA)
+                                  LENGTH(56)
+                                  END-EXEC
+                          END-IF
                     ELSE
                        EXEC CICS SEND MAP('SELMAP')
                             MAPSET('SELSET')

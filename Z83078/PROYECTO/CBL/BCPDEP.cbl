@@ -31,7 +31,11 @@
               IF EIBCALEN = 0 OR SESSION-STATE = 'D'
                  MOVE LOW-VALUES TO DEPMAPO
                  MOVE SESSION-CUENTA TO NROCUENTAO
-                 MOVE 'Ingrese cuenta y monto' TO MENSAJEO
+                 IF SESSION-CUENTA NOT = SPACES
+                    MOVE 'Ingrese monto' TO MENSAJEO
+                 ELSE
+                    MOVE 'Ingrese cuenta y monto' TO MENSAJEO
+                 END-IF
                  MOVE 'M' TO SESSION-STATE
                  EXEC CICS SEND MAP('DEPMAP')
                       MAPSET('DEPSET')

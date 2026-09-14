@@ -44,25 +44,26 @@
               ELSE
                  EVALUATE OPCIONI
                  WHEN '1'
-                      MOVE 'C' TO SESSION-STATE
+                      MOVE 'C' TO SESSION-OPER
+                      MOVE 'S' TO SESSION-STATE
                       EXEC CICS RETURN
-                           TRANSID('BCON')
+                           TRANSID('BSEL')
                            COMMAREA(DFHCOMMAREA)
                            LENGTH(56)
                            END-EXEC
                  WHEN '2'
-                      MOVE 'D' TO SESSION-STATE
-                      MOVE SPACES TO SESSION-OPER
+                      MOVE 'D' TO SESSION-OPER
+                      MOVE 'S' TO SESSION-STATE
                       EXEC CICS RETURN
-                           TRANSID('  BDEP')
+                           TRANSID('BSEL')
                            COMMAREA(DFHCOMMAREA)
                            LENGTH(56)
                            END-EXEC
                  WHEN '3'
-                      MOVE 'R' TO SESSION-STATE
-                      MOVE SPACES TO SESSION-OPER
+                      MOVE 'R' TO SESSION-OPER
+                      MOVE 'S' TO SESSION-STATE
                       EXEC CICS RETURN
-                           TRANSID('BRET')
+                           TRANSID('BSEL')
                            COMMAREA(DFHCOMMAREA)
                            LENGTH(56)
                            END-EXEC
