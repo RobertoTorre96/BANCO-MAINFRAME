@@ -44,11 +44,14 @@ Diseñar una aplicación bancaria orientada a procesos reales, con foco en:
 
 La navegación de la solución se estructura de la siguiente manera:
 
-```text
-BLOG --> BMEN --> BSEL --> BCON
-                     --> BDEP
-                     --> BRET
-                     --> BMOV
+```mermaid
+flowchart TD
+    A[BLOG<br/>Login] --> B[BMEN<br/>Menú principal]
+    B --> C[BSEL<br/>Selección de cuenta]
+    C --> D[BCON<br/>Consulta]
+    C --> E[BDEP<br/>Depósito]
+    C --> F[BRET<br/>Retiro]
+    C --> G[BMOV<br/>Movimientos]
 ```
 
 - `BLOG`: autenticación del usuario
