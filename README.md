@@ -1,5 +1,18 @@
 # Banco Digital Mainframe
 
+## Índice
+
+- [Proyecto](#proyecto)
+- [Contexto del negocio](#contexto-del-negocio)
+- [Objetivo](#objetivo)
+- [Funcionalidades principales](#funcionalidades-principales)
+- [Flujo de la aplicación](#flujo-de-la-aplicacion)
+- [Stack tecnológico](#stack-tecnologico)
+- [Valor del proyecto](#valor-del-proyecto)
+- [Perfil profesional que refleja](#perfil-profesional-que-refleja)
+- [Conclusión](#conclusion)
+- [Contacto](#contacto)
+
 ## Proyecto
 
 Aplicación bancaria transaccional desarrollada en entorno mainframe para simular operaciones esenciales de gestión de cuentas: autenticación, consulta de saldo, depósitos, retiros y consulta de historial de movimientos.
@@ -61,6 +74,8 @@ flowchart TD
 - `BDEP`: depósito
 - `BRET`: retiro
 - `BMOV`: historial de movimientos
+
+La navegación entre transacciones se realiza mediante `COMMAREA`, que permite conservar el estado de la sesión, el titular autenticado y la cuenta seleccionada al pasar de una pantalla a otra dentro del flujo transaccional de CICS.
 
 A continuación, una vista representativa del flujo principal:
 
