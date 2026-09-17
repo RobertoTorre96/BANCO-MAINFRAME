@@ -7,10 +7,10 @@
 - [Objetivo](#objetivo)
 - [Funcionalidades principales](#funcionalidades-principales)
 - [Flujo de la aplicación](#flujo-de-la-aplicacion)
-- [Stack tecnológico](#stack-tecnologico)
+- [Stack tecnológico](#stack-tecnol%C3%B3gico)
 - [Valor del proyecto](#valor-del-proyecto)
 - [Perfil profesional que refleja](#perfil-profesional-que-refleja)
-- [Conclusión](#conclusion)
+- [Conclusión](#conclusi%C3%B3n)
 - [Contacto](#contacto)
 
 ## Proyecto
@@ -100,6 +100,55 @@ A continuación, una vista representativa del flujo principal:
 - Mainframe
 - BMS / pantallas transaccionales
 - SQL
+
+---
+
+## Base de datos
+
+La solución persiste en DB2 y está compuesta por tres entidades principales:
+
+- `TITULARES`: almacena los datos del cliente y sus credenciales.
+- `CUENTAS`: guarda las cuentas asociadas a cada titular y su saldo.
+- `MOVIMIENTOS`: registra los movimientos de cada cuenta, como depósitos y retiros.
+
+### Relación entre tablas
+
+```mermaid
+erDiagram
+    TITULARES ||--o{ CUENTAS : tiene
+    CUENTAS ||--o{ MOVIMIENTOS : registra
+
+    TITULARES {
+        int NRO_TITULAR PK
+        varchar NOMBRE
+        varchar APELLIDO
+        varchar EMAIL
+        varchar PASSWORD_HASH
+        varchar SALT
+    }
+
+    CUENTAS {
+        int NRO_CUENTA PK
+        int NRO_TITULAR FK
+        decimal SALDO
+    }
+
+    MOVIMIENTOS {
+        int ID_MOVIMIENTO PK
+        int NRO_CUENTA FK
+        varchar TIPO_MOV
+        decimal MONTO
+        timestamp FECHA_HORA
+    }
+```
+
+Esta estructura permite mantener la integridad del modelo financiero:
+
+- cada titular puede tener varias cuentas
+- cada cuenta puede registrar múltiples movimientos
+- la relación se controla mediante claves foráneas en DB2
+
+La base queda organizada en la capa de datos de la aplicación, con acceso desde los programas COBOL/CICS mediante SQL embebido para consultar, validar y actualizar la información financiera.
 
 ---
 
