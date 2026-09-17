@@ -44,15 +44,19 @@ Diseñar una aplicación bancaria orientada a procesos reales, con foco en:
 
 A continuación se muestra el recorrido principal de la solución para visualizar el comportamiento del sistema desde la apertura hasta la operación financiera.
 
-![Login de usuario](imagenes/01-login.png)
+![Login correcto](./imagenes/BLOG_OK.png)
 
-![Selección de cuenta](imagenes/02-seleccion-cuenta.png)
+![Menú principal](./imagenes/BMEN.png)
 
-![Consulta de saldo](imagenes/03-consulta-saldo.png)
+![Selección de cuenta](./imagenes/BSEL.png)
 
-![Depósito y retiro](imagenes/04-deposito-retiro.png)
+![Consulta de saldo](./imagenes/BCON.png)
 
-![Historial de movimientos](imagenes/05-historial.png)
+![Depósito correcto](./imagenes/BDEP_OK.png)
+
+![Retiro](./imagenes/BRET.png)
+
+![Historial de movimientos](./imagenes/BMOV.png)
 
 ---
 
