@@ -42,7 +42,24 @@ Diseñar una aplicación bancaria orientada a procesos reales, con foco en:
 
 ## Flujo de la aplicación
 
-A continuación se muestra el recorrido principal de la solución para visualizar el comportamiento del sistema desde la apertura hasta la operación financiera.
+La navegación de la solución se estructura de la siguiente manera:
+
+```text
+BLOG --> BMEN --> BSEL --> BCON
+                     --> BDEP
+                     --> BRET
+                     --> BMOV
+```
+
+- `BLOG`: autenticación del usuario
+- `BMEN`: menú principal
+- `BSEL`: selección de cuenta
+- `BCON`: consulta de saldo
+- `BDEP`: depósito
+- `BRET`: retiro
+- `BMOV`: historial de movimientos
+
+A continuación, una vista representativa del flujo principal:
 
 ![Login correcto](./imagenes/BLOG_OK.png)
 
@@ -51,12 +68,6 @@ A continuación se muestra el recorrido principal de la solución para visualiza
 ![Selección de cuenta](./imagenes/BSEL.png)
 
 ![Consulta de saldo](./imagenes/BCON.png)
-
-![Depósito correcto](./imagenes/BDEP_OK.png)
-
-![Retiro](./imagenes/BRET.png)
-
-![Historial de movimientos](./imagenes/BMOV.png)
 
 ---
 
