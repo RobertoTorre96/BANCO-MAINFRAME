@@ -69,23 +69,38 @@
       * Consulta la cuenta que llego seleccionada en SESSION-CUENTA    *
       *----------------------------------------------------------------*
        1100-CONSULTAR-CUENTA-SESION.
-           MOVE SESSION-CUENTA TO NROCUENTAO
-           COMPUTE WS-NRO-CUENTA = FUNCTION NUMVAL(SESSION-CUENTA)
+           IF SESSION-CUENTA NOT = LOW-VALUES AND
+              SESSION-CUENTA NOT = SPACES AND
+              FUNCTION TEST-NUMVAL(SESSION-CUENTA) = 0
+              MOVE SESSION-CUENTA TO NROCUENTAO
+              COMPUTE WS-NRO-CUENTA = FUNCTION NUMVAL(SESSION-CUENTA)
 
-           PERFORM 100-CONSULTAR-DB2
+              PERFORM 100-CONSULTAR-DB2
 
-           EVALUATE SQLCODE
-           WHEN 0
-                MOVE WS-NOMBRE TO NOMBREO
-                MOVE WS-APELLIDO TO APELLIDOO
-                MOVE WS-SALDO TO WS-SALDO-EDIT
-                MOVE WS-SALDO-EDIT TO SALDOO
-                MOVE 'Cuenta encontrada' TO MENSAJEO
-           WHEN 100
-                MOVE 'Cuenta no encontrada' TO MENSAJEO
-           WHEN OTHER
-                MOVE 'Error al consultar cuenta' TO MENSAJEO
-           END-EVALUATE
+              EVALUATE SQLCODE
+              WHEN 0
+                   MOVE WS-NOMBRE TO NOMBREO
+                   MOVE WS-APELLIDO TO APELLIDOO
+                   MOVE WS-SALDO TO WS-SALDO-EDIT
+                   MOVE WS-SALDO-EDIT TO SALDOO
+                   MOVE 'Cuenta encontrada' TO MENSAJEO
+              WHEN 100
+                   MOVE SPACES TO NOMBREO
+                   MOVE SPACES TO APELLIDOO
+                   MOVE SPACES TO SALDOO
+                   MOVE 'Cuenta no encontrada' TO MENSAJEO
+              WHEN OTHER
+                   MOVE SPACES TO NOMBREO
+                   MOVE SPACES TO APELLIDOO
+                   MOVE SPACES TO SALDOO
+                   MOVE 'Error al consultar cuenta' TO MENSAJEO
+              END-EVALUATE
+           ELSE
+              MOVE SPACES TO NOMBREO
+              MOVE SPACES TO APELLIDOO
+              MOVE SPACES TO SALDOO
+              MOVE 'Cuenta no encontrada' TO MENSAJEO
+           END-IF
 
            MOVE 'M' TO SESSION-STATE
 
@@ -154,7 +169,8 @@
       *----------------------------------------------------------------*
        2200-CONSUL-CUENTA-INGRESADA.
            IF NROCUENTAI NOT = LOW-VALUES AND
-              NROCUENTAI NOT = SPACES
+              NROCUENTAI NOT = SPACES AND
+              FUNCTION TEST-NUMVAL(NROCUENTAI) = 0
 
               COMPUTE WS-NRO-CUENTA = FUNCTION NUMVAL(NROCUENTAI)
 
