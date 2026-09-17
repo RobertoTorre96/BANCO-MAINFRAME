@@ -187,5 +187,5 @@ Es un ejemplo claro de mi enfoque hacia soluciones empresariales, transaccionale
 ## Contacto
 
 - Email: torreroberto1996@gmail.com
-- Celular: +54 11 6491 310
+- Celular: +54 11 6249 1310
 - LinkedIn: https://www.linkedin.com/in/torre-roberto/
