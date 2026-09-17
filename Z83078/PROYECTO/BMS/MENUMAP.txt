@@ -40,14 +40,18 @@ MENUMAP  DFHMDI SIZE=(24,80),                                          X
                ATTRB=ASKIP,                                            X
                INITIAL='Opcion:'
 *
-OPCION   DFHMDF POS=(8,15),                                            X
+OPCION   DFHMDF POS=(8,16),                                            X
                LENGTH=1,                                               X
-               ATTRB=(UNPROT,NUM,IC),                                  X
-               FSET=YES
+               ATTRB=(UNPROT,NUM,IC,FSET)
+*
+MENSAJE  DFHMDF POS=(10,5),                                            X
+               LENGTH=40,                                              X
+               ATTRB=(ASKIP,BRT),                                      X
+               INITIAL=' '
 *
          DFHMDF POS=(20,5),                                            X
                LENGTH=50,                                              X
-               ATTRB=(ASKIP,BRT),                                     X
+               ATTRB=(ASKIP,BRT),                                      X
                INITIAL='Ingrese opcion y presione Enter. PF3=Salir'
 *
          DFHMSD TYPE=FINAL

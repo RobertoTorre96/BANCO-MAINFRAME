@@ -25,6 +25,10 @@
 
        PROCEDURE DIVISION.
 
+       MAIN-LOGIC SECTION.
+      *----------------------------------------------------------------*
+      * Control principal del flujo de consulta de cuenta               *
+      *----------------------------------------------------------------*
            IF SESSION-STATE NOT = 'C' AND
               SESSION-STATE NOT = 'M'
               EXEC CICS RETURN
@@ -32,101 +36,9 @@
                    END-EXEC
            ELSE
               IF EIBCALEN = 0 OR SESSION-STATE = 'C'
-                 IF SESSION-CUENTA NOT = SPACES
-                    MOVE SESSION-CUENTA TO NROCUENTAO
-                    COMPUTE WS-NRO-CUENTA = FUNCTION NUMVAL
-                       (SESSION-CUENTA)
-                    PERFORM 100-CONSULTAR-DB2
-                    EVALUATE SQLCODE
-                    WHEN 0
-                         MOVE WS-NOMBRE TO NOMBREO
-                         MOVE WS-APELLIDO TO APELLIDOO
-                         MOVE WS-SALDO TO WS-SALDO-EDIT
-                         MOVE WS-SALDO-EDIT TO SALDOO
-                         MOVE 'Cuenta encontrada' TO MENSAJEO
-                    WHEN 100
-                         MOVE 'Cuenta no encontrada' TO MENSAJEO
-                    WHEN OTHER
-                         MOVE 'Error al consultar cuenta' TO MENSAJEO
-                    END-EVALUATE
-                    MOVE 'M' TO SESSION-STATE
-                    EXEC CICS SEND MAP('CONMAP')
-                         MAPSET('CONSET')
-                         ERASE
-                         RESP(WS-RESP)
-                         END-EXEC
-                 ELSE
-                    MOVE LOW-VALUES TO CONMAPO
-                    MOVE 'Ingrese el numero de cuenta' TO MENSAJEO
-                    MOVE 'M' TO SESSION-STATE
-                    EXEC CICS SEND MAP('CONMAP')
-                         MAPSET('CONSET')
-                         ERASE
-                         RESP(WS-RESP)
-                         END-EXEC
-                 END-IF
+                 PERFORM 1000-FIRST-TIME
               ELSE
-                 EXEC CICS RECEIVE MAP('CONMAP')
-                      MAPSET('CONSET')
-                      RESP(WS-RESP)
-                      END-EXEC
-
-                 IF EIBAID = DFHPF3
-                    EXEC CICS SEND CONTROL
-                         ERASE
-                         END-EXEC
-                    EXEC CICS RETURN
-                         TRANSID('BMEN')
-                         COMMAREA(DFHCOMMAREA)
-                         LENGTH(56)
-                         END-EXEC
-                 ELSE
-                    IF NROCUENTAI NOT = LOW-VALUES AND
-                       NROCUENTAI NOT = SPACES
-
-                       COMPUTE WS-NRO-CUENTA = FUNCTION NUMVAL
-                          (NROCUENTAI)
-
-      *             --- LLAMADA SEGURA AL COPY SQL ---
-                       PERFORM 100-CONSULTAR-DB2
-
-                       EVALUATE SQLCODE
-                       WHEN 0
-                            MOVE WS-NOMBRE TO NOMBREO
-                            MOVE WS-APELLIDO TO APELLIDOO
-                            MOVE WS-SALDO TO WS-SALDO-EDIT
-                            MOVE WS-SALDO-EDIT TO SALDOO
-                            MOVE 'Cuenta encontrada' TO MENSAJEO
-                       WHEN 100
-                            MOVE SPACES TO NOMBREO
-                            MOVE SPACES TO APELLIDOO
-                            MOVE SPACES TO SALDOO
-                            MOVE 'Cuenta no encontrada' TO MENSAJEO
-                       WHEN OTHER
-                            MOVE SPACES TO NOMBREO
-                            MOVE SPACES TO APELLIDOO
-                            MOVE SPACES TO SALDOO
-                            MOVE SPACES TO MENSAJEO
-                            STRING 'ST=' DELIMITED BY SIZE
-                                   SQLSTATE DELIMITED BY SIZE
-                                   ' ' DELIMITED BY SIZE
-                                   SQLERRMC DELIMITED BY SIZE
-                               INTO MENSAJEO
-                            END-STRING
-                       END-EVALUATE
-                    ELSE
-                       MOVE SPACES TO NOMBREO
-                       MOVE SPACES TO APELLIDOO
-                       MOVE SPACES TO SALDOO
-                       MOVE 'Cuenta no encontrada' TO MENSAJEO
-                    END-IF
-
-                    EXEC CICS SEND MAP('CONMAP')
-                         MAPSET('CONSET')
-                         ERASE
-                         RESP(WS-RESP)
-                         END-EXEC
-                 END-IF
+                 PERFORM 2000-PROCESS-INPUT
               END-IF
            END-IF.
 
@@ -136,7 +48,162 @@
                 LENGTH(56)
                 END-EXEC.
 
-      * --- PÁRRAFO AISLADO PARA EL SQL ---
+       MAIN-LOGIC-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * Primera vez: cuenta ya viene seleccionada desde BSEL, o         *
+      * todavia no hay cuenta y hay que pedirla                        *
+      *----------------------------------------------------------------*
+       1000-FIRST-TIME.
+           IF SESSION-CUENTA NOT = SPACES
+              PERFORM 1100-CONSULTAR-CUENTA-SESION
+           ELSE
+              PERFORM 1200-PEDIR-CUENTA
+           END-IF.
+
+       1000-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * Consulta la cuenta que llego seleccionada en SESSION-CUENTA    *
+      *----------------------------------------------------------------*
+       1100-CONSULTAR-CUENTA-SESION.
+           MOVE SESSION-CUENTA TO NROCUENTAO
+           COMPUTE WS-NRO-CUENTA = FUNCTION NUMVAL(SESSION-CUENTA)
+
+           PERFORM 100-CONSULTAR-DB2
+
+           EVALUATE SQLCODE
+           WHEN 0
+                MOVE WS-NOMBRE TO NOMBREO
+                MOVE WS-APELLIDO TO APELLIDOO
+                MOVE WS-SALDO TO WS-SALDO-EDIT
+                MOVE WS-SALDO-EDIT TO SALDOO
+                MOVE 'Cuenta encontrada' TO MENSAJEO
+           WHEN 100
+                MOVE 'Cuenta no encontrada' TO MENSAJEO
+           WHEN OTHER
+                MOVE 'Error al consultar cuenta' TO MENSAJEO
+           END-EVALUATE
+
+           MOVE 'M' TO SESSION-STATE
+
+           EXEC CICS SEND MAP('CONMAP')
+                MAPSET('CONSET')
+                ERASE
+                RESP(WS-RESP)
+                END-EXEC.
+
+       1100-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * No hay cuenta todavia: pinta el mapa vacio pidiendo el numero  *
+      *----------------------------------------------------------------*
+       1200-PEDIR-CUENTA.
+           MOVE LOW-VALUES TO CONMAPO
+           MOVE 'Ingrese el numero de cuenta' TO MENSAJEO
+           MOVE 'M' TO SESSION-STATE
+
+           EXEC CICS SEND MAP('CONMAP')
+                MAPSET('CONSET')
+                ERASE
+                RESP(WS-RESP)
+                END-EXEC.
+
+       1200-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * Procesa la entrada del usuario (numero de cuenta o PF3)        *
+      *----------------------------------------------------------------*
+       2000-PROCESS-INPUT.
+           EXEC CICS RECEIVE MAP('CONMAP')
+                MAPSET('CONSET')
+                RESP(WS-RESP)
+                END-EXEC
+
+           IF EIBAID = DFHPF3
+              PERFORM 2100-HANDLE-EXIT
+           ELSE
+              PERFORM 2200-CONSUL-CUENTA-INGRESADA
+           END-IF.
+
+       2000-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * Salida hacia el menu (PF3)                                     *
+      *----------------------------------------------------------------*
+       2100-HANDLE-EXIT.
+           EXEC CICS SEND CONTROL
+                ERASE
+                END-EXEC
+           EXEC CICS RETURN
+                TRANSID('BMEN')
+                COMMAREA(DFHCOMMAREA)
+                LENGTH(56)
+                END-EXEC.
+
+       2100-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * Consulta la cuenta que el usuario tipeo en el mapa             *
+      *----------------------------------------------------------------*
+       2200-CONSUL-CUENTA-INGRESADA.
+           IF NROCUENTAI NOT = LOW-VALUES AND
+              NROCUENTAI NOT = SPACES
+
+              COMPUTE WS-NRO-CUENTA = FUNCTION NUMVAL(NROCUENTAI)
+
+      *        --- LLAMADA SEGURA AL COPY SQL ---
+              PERFORM 100-CONSULTAR-DB2
+
+              EVALUATE SQLCODE
+              WHEN 0
+                   MOVE WS-NOMBRE TO NOMBREO
+                   MOVE WS-APELLIDO TO APELLIDOO
+                   MOVE WS-SALDO TO WS-SALDO-EDIT
+                   MOVE WS-SALDO-EDIT TO SALDOO
+                   MOVE 'Cuenta encontrada' TO MENSAJEO
+              WHEN 100
+                   MOVE SPACES TO NOMBREO
+                   MOVE SPACES TO APELLIDOO
+                   MOVE SPACES TO SALDOO
+                   MOVE 'Cuenta no encontrada' TO MENSAJEO
+              WHEN OTHER
+                   MOVE SPACES TO NOMBREO
+                   MOVE SPACES TO APELLIDOO
+                   MOVE SPACES TO SALDOO
+                   MOVE SPACES TO MENSAJEO
+                   STRING 'ST=' DELIMITED BY SIZE
+                          SQLSTATE DELIMITED BY SIZE
+                          ' ' DELIMITED BY SIZE
+                          SQLERRMC DELIMITED BY SIZE
+                      INTO MENSAJEO
+                   END-STRING
+              END-EVALUATE
+           ELSE
+              MOVE SPACES TO NOMBREO
+              MOVE SPACES TO APELLIDOO
+              MOVE SPACES TO SALDOO
+              MOVE 'Cuenta no encontrada' TO MENSAJEO
+           END-IF
+
+           EXEC CICS SEND MAP('CONMAP')
+                MAPSET('CONSET')
+                ERASE
+                RESP(WS-RESP)
+                END-EXEC.
+
+       2200-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * Parrafo aislado para el SQL (COPY externo)                     *
+      *----------------------------------------------------------------*
        100-CONSULTAR-DB2.
            COPY BCPCON.
            EXIT.

@@ -52,7 +52,7 @@ SALDO    DFHMDF POS=(10,25),                                           X
                ATTRB=(PROT,NORM),                                      X
                PICOUT='X(15)'
 *
-MENSAJE  DFHMDF POS=(14,5),                                           X
+MENSAJE  DFHMDF POS=(14,5),                                            X
                LENGTH=60,                                              X
                ATTRB=(PROT,NORM,FSET),                                 X
                INITIAL=' '

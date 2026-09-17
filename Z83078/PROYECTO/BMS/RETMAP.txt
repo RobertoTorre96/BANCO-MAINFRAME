@@ -1,4 +1,4 @@
-MOVSET   DFHMSD TYPE=&SYSPARM,                                         X
+RETSET   DFHMSD TYPE=&SYSPARM,                                         X
                LANG=COBOL,                                             X
                MODE=INOUT,                                             X
                TERM=3270-2,                                            X
@@ -6,14 +6,14 @@ MOVSET   DFHMSD TYPE=&SYSPARM,                                         X
                STORAGE=AUTO,                                           X
                TIOAPFX=YES
 *
-MOVMAP   DFHMDI SIZE=(24,80),                                          X
+RETMAP   DFHMDI SIZE=(24,80),                                          X
                LINE=1,                                                 X
                COLUMN=1
 *
-         DFHMDF POS=(1,27),                                            X
-               LENGTH=26,                                              X
+         DFHMDF POS=(1,29),                                            X
+               LENGTH=22,                                              X
                ATTRB=(PROT,BRT),                                       X
-               INITIAL='CONSULTA DE MOVIMIENTOS'
+               INITIAL='RETIRO DE CUENTA'
 *
          DFHMDF POS=(4,5),                                             X
                LENGTH=18,                                              X
@@ -25,32 +25,25 @@ NROCUENTA DFHMDF POS=(4,25),                                           X
                PICIN='X(10)',                                          X
                PICOUT='X(10)'
 *
-MOVIM1   DFHMDF POS=(7,5),                                             X
-               LENGTH=60,                                              X
+         DFHMDF POS=(6,5),                                             X
+               LENGTH=10,                                              X
                ATTRB=(PROT,NORM),                                      X
-               INITIAL=' '
-MOVIM2   DFHMDF POS=(8,5),                                             X
-               LENGTH=60,                                              X
-               ATTRB=(PROT,NORM),                                      X
-               INITIAL=' '
-MOVIM3   DFHMDF POS=(9,5),                                             X
-               LENGTH=60,                                              X
-               ATTRB=(PROT,NORM),                                      X
-               INITIAL=' '
-MOVIM4   DFHMDF POS=(10,5),                                            X
-               LENGTH=60,                                              X
-               ATTRB=(PROT,NORM),                                      X
-               INITIAL=' '
+               INITIAL='MONTO:'
+MONTO    DFHMDF POS=(6,25),                                            X
+               LENGTH=15,                                              X
+               ATTRB=(UNPROT,NUM,IC),                                  X
+               PICIN='X(15)',                                          X
+               PICOUT='X(15)'
 *
-MENSAJE  DFHMDF POS=(14,5),                                           X
+MENSAJE  DFHMDF POS=(10,5),                                            X
                LENGTH=60,                                              X
                ATTRB=(PROT,NORM,FSET),                                 X
                INITIAL=' '
 *
          DFHMDF POS=(24,1),                                            X
-               LENGTH=45,                                              X
+               LENGTH=40,                                              X
                ATTRB=(PROT,NORM),                                      X
-               INITIAL='ENTER=Consultar  PF3=Salir'
+               INITIAL='ENTER=Retirar  PF3=Salir'
 *
          DFHMSD TYPE=FINAL
          END

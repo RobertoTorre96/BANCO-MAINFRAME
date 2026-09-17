@@ -14,8 +14,8 @@
        01 WS-CUENTA-4-EDIT  PIC 9(10).
 
            EXEC SQL INCLUDE SQLCA END-EXEC.
-             COPY SELMAP.
-             COPY DFHAID.
+           COPY SELMAP.
+           COPY DFHAID.
 
           LINKAGE SECTION.
        01 DFHCOMMAREA.
@@ -23,6 +23,10 @@
 
        PROCEDURE DIVISION.
 
+       MAIN-LOGIC SECTION.
+      *----------------------------------------------------------------*
+      * Control principal del flujo de seleccion de cuenta              *
+      *----------------------------------------------------------------*
            IF SESSION-STATE NOT = 'S' AND
               SESSION-STATE NOT = 'A'
               EXEC CICS RETURN
@@ -30,62 +34,9 @@
                    END-EXEC
            ELSE
               IF SESSION-STATE = 'S'
-                 PERFORM 100-CARGAR-CUENTAS
-                 MOVE 'A' TO SESSION-STATE
-                 MOVE SPACES TO OPCIONI
-                 MOVE 'Seleccione una cuenta' TO MENSAJEO
-                 EXEC CICS SEND MAP('SELMAP')
-                      MAPSET('SELSET')
-                      ERASE
-                      RESP(WS-RESP)
-                      END-EXEC
+                 PERFORM 1000-FIRST-TIME
               ELSE
-                 EXEC CICS RECEIVE MAP('SELMAP')
-                      MAPSET('SELSET')
-                      RESP(WS-RESP)
-                      END-EXEC
-
-                 IF EIBAID = DFHPF3
-                    MOVE 'M' TO SESSION-STATE
-                    EXEC CICS RETURN
-                         TRANSID('BMEN')
-                         COMMAREA(DFHCOMMAREA)
-                         LENGTH(56)
-                         END-EXEC
-                 ELSE
-                    PERFORM 200-SELECCIONAR-CUENTA
-                    IF SQLCODE = 0
-                       IF SESSION-OPER = 'C'
-                          MOVE 'C' TO SESSION-STATE
-                          EXEC CICS RETURN
-                               TRANSID('BCON')
-                               COMMAREA(DFHCOMMAREA)
-                               LENGTH(56)
-                               END-EXEC
-                       ELSE
-                          IF SESSION-OPER = 'D'
-                             MOVE 'D' TO SESSION-STATE
-                             EXEC CICS RETURN
-                                  TRANSID('BDEP')
-                                  COMMAREA(DFHCOMMAREA)
-                                  LENGTH(56)
-                                  END-EXEC
-                          ELSE
-                             MOVE 'R' TO SESSION-STATE
-                             EXEC CICS RETURN
-                                  TRANSID('BRET')
-                                  COMMAREA(DFHCOMMAREA)
-                                  LENGTH(56)
-                                  END-EXEC
-                          END-IF
-                    ELSE
-                       EXEC CICS SEND MAP('SELMAP')
-                            MAPSET('SELSET')
-                            DATAONLY
-                            RESP(WS-RESP)
-                            END-EXEC
-                    END-IF
-                 END-IF
+                 PERFORM 2000-PROCESS-INPUT
               END-IF
            END-IF.
 
@@ -95,6 +46,124 @@
                 LENGTH(56)
                 END-EXEC.
 
+       MAIN-LOGIC-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * Primera vez: limpia el mapa, carga las cuentas del titular     *
+      * y pinta la pantalla                                            *
+      *----------------------------------------------------------------*
+       1000-FIRST-TIME.
+           MOVE LOW-VALUES TO SELMAPO
+           PERFORM 100-CARGAR-CUENTAS
+
+           MOVE SPACES TO OPCIONI
+           MOVE 'A' TO SESSION-STATE
+           MOVE 'Seleccione una cuenta' TO MENSAJEO
+
+           EXEC CICS SEND MAP('SELMAP')
+                MAPSET('SELSET')
+                ERASE
+                RESP(WS-RESP)
+                END-EXEC.
+
+       1000-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * Procesa la entrada del usuario (opcion elegida o PF3)          *
+      *----------------------------------------------------------------*
+       2000-PROCESS-INPUT.
+           EXEC CICS RECEIVE MAP('SELMAP')
+                MAPSET('SELSET')
+                RESP(WS-RESP)
+                END-EXEC
+
+           IF EIBAID = DFHPF3
+              PERFORM 2100-HANDLE-EXIT
+           ELSE
+              PERFORM 2200-EVALUATE-SELECTION
+           END-IF.
+
+       2000-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * Salida hacia el menu (PF3)                                     *
+      *----------------------------------------------------------------*
+       2100-HANDLE-EXIT.
+           MOVE 'M' TO SESSION-STATE
+
+           EXEC CICS RETURN
+                TRANSID('BMEN')
+                COMMAREA(DFHCOMMAREA)
+                LENGTH(56)
+                END-EXEC.
+
+       2100-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * Evalua la cuenta elegida y deriva a BCON/BDEP/BRET/BMOV        *
+      *----------------------------------------------------------------*
+       2200-EVALUATE-SELECTION.
+           PERFORM 200-SELECCIONAR-CUENTA
+
+           IF SQLCODE = 0
+              PERFORM 2300-XFER-BY-OPERATION
+           ELSE
+              EXEC CICS SEND MAP('SELMAP')
+                   MAPSET('SELSET')
+                   DATAONLY
+                   RESP(WS-RESP)
+                   END-EXEC
+           END-IF.
+
+       2200-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * Cuenta valida: transfiere segun la operacion pedida            *
+      * (C=Consulta, D=Deposito, R=Retiro, V=Ver movimientos)          *
+      *----------------------------------------------------------------*
+       2300-XFER-BY-OPERATION.
+           EVALUATE SESSION-OPER
+               WHEN 'C'
+                   MOVE 'C' TO SESSION-STATE
+                   EXEC CICS RETURN
+                        TRANSID('BCON')
+                        COMMAREA(DFHCOMMAREA)
+                        LENGTH(56)
+                        END-EXEC
+               WHEN 'D'
+                   MOVE 'D' TO SESSION-STATE
+                   EXEC CICS RETURN
+                        TRANSID('BDEP')
+                        COMMAREA(DFHCOMMAREA)
+                        LENGTH(56)
+                        END-EXEC
+               WHEN 'V'
+                   MOVE 'V' TO SESSION-STATE
+                   EXEC CICS RETURN
+                        TRANSID('BMOV')
+                        COMMAREA(DFHCOMMAREA)
+                        LENGTH(56)
+                        END-EXEC
+               WHEN OTHER
+                   MOVE 'R' TO SESSION-STATE
+                   EXEC CICS RETURN
+                        TRANSID('BRET')
+                        COMMAREA(DFHCOMMAREA)
+                        LENGTH(56)
+                        END-EXEC
+           END-EVALUATE.
+
+       2300-EXIT.
+           EXIT.
+
+      *----------------------------------------------------------------*
+      * Carga las cuentas del titular vía cursor SQL (COPY externo)    *
+      *----------------------------------------------------------------*
        100-CARGAR-CUENTAS.
            MOVE 0 TO WS-CUENTA-1
                      WS-CUENTA-2
@@ -104,6 +173,9 @@
            COPY BCPSEL.
            EXIT.
 
+      *----------------------------------------------------------------*
+      * Valida la opcion tipeada contra las cuentas ya cargadas        *
+      *----------------------------------------------------------------*
        200-SELECCIONAR-CUENTA.
            MOVE 100 TO SQLCODE.
            EVALUATE OPCIONI
@@ -130,3 +202,6 @@
            WHEN OTHER
                 MOVE 'Seleccione una opcion valida' TO MENSAJEO
            END-EVALUATE.
+
+       200-EXIT.
+           EXIT.

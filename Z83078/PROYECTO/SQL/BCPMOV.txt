@@ -3,8 +3,7 @@
                           DECLARE C-MOVIMIENTOS CURSOR FOR
                           SELECT TIPO_MOV, MONTO, FECHA_HORA
                               FROM Z83078.MOVIMIENTOS
-                                                                  WHERE NRO_CUENTA = :WS-NRO-CUENTA
-                                                                       AND NRO_TITULAR = :SESSION-TITULAR
+                           WHERE NRO_CUENTA = :WS-NRO-CUENTA
                            ORDER BY FECHA_HORA DESC
                  END-EXEC.
                  EXEC SQL

@@ -1,16 +1,15 @@
            EXEC SQL
                 UPDATE Z83078.CUENTAS
-                   SET SALDO = SALDO - :WS-MONTO
+                   SET SALDO = SALDO + :WS-MONTO
                  WHERE NRO_CUENTA = :WS-NRO-CUENTA
                             AND NRO_TITULAR = :SESSION-TITULAR
-                   AND SALDO >= :WS-MONTO
            END-EXEC.
 
            IF SQLCODE = 0 AND SQLERRD(3) = 1
               EXEC SQL
                    INSERT INTO Z83078.MOVIMIENTOS
-                          (NRO_CUENTA, TIPO_MOV, MONTO, FECHA_HORA)
-                   VALUES (:WS-NRO-CUENTA, :WS-TIPO-MOV,
+                    (NRO_CUENTA, TIPO_MOV, MONTO, FECHA_HORA)
+                  VALUES (:WS-NRO-CUENTA, :WS-TIPO-MOV,
                            :WS-MONTO, CURRENT TIMESTAMP)
               END-EXEC
               IF SQLCODE NOT = 0
