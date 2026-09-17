@@ -120,8 +120,8 @@ Es un ejemplo claro de mi enfoque hacia soluciones empresariales, transaccionale
 
 ---
 
-## Nota
+## Contacto
 
-Este README fue redactado con un enfoque de portfolio profesional, destacando el valor del proyecto, su contexto de negocio y la capacidad técnica aplicada en un entorno mainframe.
-
-La carpeta de imágenes permite complementar la presentación visual del flujo de la aplicación para una revisión más clara y profesional.
+- Email: torreroberto1996@gmail.com
+- Celular: +54 11 6491 310
+- LinkedIn: https://www.linkedin.com/in/torre-roberto/
